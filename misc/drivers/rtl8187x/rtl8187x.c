@@ -1185,7 +1185,7 @@ static inline int rtl8187x_allocbuffers(FAR struct rtl8187x_state_s *priv)
    * the TX descriptor.
    */
 
-  buflen = CONFIG_NET_BUFSIZE + 2 + SIZEOF_TXDESC;
+  buflen = CONFIG_NET_ETH_MTU + 2 + SIZEOF_TXDESC;
   ret = DRVR_IOALLOC(priv->hcd, &priv->txbuffer, buflen);
   if (ret != OK)
     {
@@ -1196,7 +1196,7 @@ static inline int rtl8187x_allocbuffers(FAR struct rtl8187x_state_s *priv)
    * the RX descriptor.
    */
 
-  buflen = CONFIG_NET_BUFSIZE + 2 + SIZEOF_RXDESC;
+  buflen = CONFIG_NET_ETH_MTU + 2 + SIZEOF_RXDESC;
   ret = DRVR_IOALLOC(priv->hcd, &priv->rxbuffer, buflen);
   if (ret != OK)
     {
@@ -2188,7 +2188,7 @@ static inline int rtl8187x_receive(FAR struct rtl8187x_state_s *priv,
 
   /* Check if uIP is configured to handle a packet of this size */
 
-  if (iolen > CONFIG_NET_BUFSIZE + SIZEOF_RXDESC + 2)
+  if (iolen > CONFIG_NET_ETH_MTU + SIZEOF_RXDESC + 2)
     {
       RTL8187X_STATS(priv, rxtoobig);
       RTL8187X_STATS(priv, rxdropped);
@@ -2319,7 +2319,7 @@ static void rtl8187x_rxpollwork(FAR void *arg)
       /* Attempt to read from the bulkin endpoint */
 
       ret = DRVR_TRANSFER(priv->hcd, priv->epin, priv->rxbuffer,
-                          CONFIG_NET_BUFSIZE + SIZEOF_RXDESC + 2);
+                          CONFIG_NET_ETH_MTU + SIZEOF_RXDESC + 2);
 
       /* How dow we get the length of the transfer? */
 #warning "Missing logic"
