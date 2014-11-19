@@ -285,6 +285,22 @@ A: https://groups.yahoo.com/neo/groups/nuttx/conversations/messages/1160
     invoked. I think you would have to hard code those path options into those
     configure commands."
 
+Q: When I try to run the tools I get errors like 'cc1' not found or strange
+   errors from 'as'.
+
+A: Did you move the toolchain after you built it?  I used to do that all of the
+   time but building under 64-bit OpenSUSE 13.1, I could not longer do that.
+   When I executed the compiler in the location where it was built, all worked
+   well.  But if I moved the toolchain chain, I would bet the strange 'as'
+   errors.
+
+   Or... are you sure you built the right toolchain?  These are simple tools
+   designed for one CPU configuration.  So the CFLAGS in your Makefile must match
+   the way the tool chain was built.  I have heard reports that building a
+   Cortect-M4F toolchain then using it with a Cortex-M3 or M4 without floating
+   point Make.defs caused the path to 'cc1' to be lost.
+
+
 Cygwin GCC BUILD NOTES
 ^^^^^^^^^^^^^^^^^^^^^^
 
