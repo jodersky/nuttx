@@ -1,5 +1,5 @@
 /************************************************************************************
- * configs/sama5d3-xplained/src/sam_adc.c
+ * configs/nucleo-f4x1re/src/stm32_adc.c
  *
  *   Copyright (C) 2014 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
@@ -43,17 +43,40 @@
 #include <debug.h>
 
 #include <nuttx/analog/adc.h>
+#include <arch/board/board.h>
 
-#include "sam_adc.h"
-#include "sama5d3-xplained.h"
+#include "chip.h"
+#include "up_arch.h"
+
+#include "stm32_pwm.h"
+#include "nucleo-f4x1re.h"
+
+#ifdef CONFIG_STM32_ADC1
 
 /************************************************************************************
  * Pre-processor Definitions
  ************************************************************************************/
 
+/* The number of ADC channels in the conversion list */
+
+#define ADC1_NCHANNELS 2
+
 /************************************************************************************
  * Private Data
  ************************************************************************************/
+/* Identifying number of each ADC channel. */
+
+#ifdef CONFIG_STM32_ADC1
+#ifdef CONFIG_AJOYSTICK
+/* The Itead analog joystick gets inputs on ADC_IN0 and ADC_IN1 */
+
+static const uint8_t  g_adc1_chanlist[ADC1_NCHANNELS] = {0, 1};
+
+/* Configurations of pins used byte each ADC channels */
+
+static const uint32_t g_adc1_pinlist[ADC1_NCHANNELS]  = {GPIO_ADC1_IN0, GPIO_ADC1_IN0};
+#endif
+#endif
 
 /************************************************************************************
  * Private Functions
@@ -71,20 +94,28 @@
  *
  ************************************************************************************/
 
-#ifdef CONFIG_SAMA5_ADC
 int board_adc_initialize(void)
 {
   static bool initialized = false;
   struct adc_dev_s *adc;
   int ret;
+  int i;
 
   /* Check if we have already initialized */
 
   if (!initialized)
     {
+#ifdef CONFIG_STM32_ADC1
+      /* Configure the pins as analog inputs for the selected channels */
+
+      for (i = 0; i < ADC1_NCHANNELS; i++)
+        {
+          stm32_configgpio(g_adc1_pinlist[i]);
+        }
+
       /* Call stm32_adcinitialize() to get an instance of the ADC interface */
 
-      adc = sam_adc_initialize();
+      adc = stm32_adcinitialize(1, g_adc1_chanlist, ADC1_NCHANNELS);
       if (adc == NULL)
         {
           adbg("ERROR: Failed to get ADC interface\n");
@@ -99,7 +130,7 @@ int board_adc_initialize(void)
           adbg("adc_register failed: %d\n", ret);
           return ret;
         }
-
+#endif
       /* Now we are initialized */
 
       initialized = true;
@@ -107,13 +138,12 @@ int board_adc_initialize(void)
 
   return OK;
 }
-#endif /* CONFIG_ADC */
 
 /************************************************************************************
  * Name: adc_devinit
  *
  * Description:
- *   All SAMA5 architectures must provide the following interface to work with
+ *   All STM32 architectures must provide the following interface to work with
  *   examples/adc.
  *
  ************************************************************************************/
@@ -128,3 +158,5 @@ int adc_devinit(void)
 #endif
 }
 #endif /* CONFIG_EXAMPLES_ADC */
+
+#endif /* CONFIG_STM32_ADC1 */
