@@ -393,8 +393,8 @@ Serial Consoles
 
     Nucleo CN10 STM32F4x1RE
     ----------- ------------
-    Pin 21 PA9  USART2_RX
-    Pin 33 PA10 USART2_TX
+    Pin 21 PA9  USART1_RX   *Warning you make need to reverse RX/TX on
+    Pin 33 PA10 USART1_TX    some RS-232 converters
     Pin 20 GND
     Pin 8  U5V
 
@@ -425,8 +425,8 @@ Serial Consoles
 
     Nucleo CN9  STM32F4x1RE
     ----------- ------------
-    Pin 1  PA3  USART2_RX
-    Pin 2  PA2  USART2_TX
+    Pin 1  PA3  USART2_RX   *Warning you make need to reverse RX/TX on
+    Pin 2  PA2  USART2_TX    some RS-232 converters
 
   Solder Bridges.  This configuration requires:
 
@@ -529,12 +529,18 @@ Shields
      D7       Button A Output   PA8
      D8       Button F Output   PA9
      D9       Button G Output   PC7
-     A0       Joystick Y Output PA0  ADC_IN0
-     A1       Joystick X Output PA1  ADC_IN1
+     A0       Joystick Y Output PA0  ADC1_0
+     A1       Joystick X Output PA1  ADC1_1
     --------- ----------------- ---------------------------------
 
     All buttons are pulled on the shield.  A sensed low value indicates
     when the button is pressed.
+
+    NOTE: Button F cannot be used with the default USART1 configuration
+    because PA9 is configured for USART1_RX by default.  Use select
+    different USART1 pins in the board.h file or select a different
+    USART or select CONFIG_NUCLEO_F401RE_AJOY_MINBUTTONS which will
+    eliminate all but buttons A, B, and C.
 
   Itead Joystick Signal interpretation:
 
@@ -569,6 +575,17 @@ Shields
     CONFIG_EXAMPLES_AJOYSTICK=y
     CONFIG_EXAMPLES_AJOYSTICK_DEVNAME="/dev/ajoy0"
     CONFIG_EXAMPLES_AJOYSTICK_SIGNO=13
+
+  STATUS:
+  2014-12-04:
+    - Without ADC DMA support, it is not possible to sample both X and Y
+      with a single ADC.  Right now, only one axis is being converted.
+    - There is conflicts with some of the Arduino data pins and the
+      default USART1 configuration.  I am currently running with USART1
+      but with CONFIG_NUCLEO_F401RE_AJOY_MINBUTTONS to eliminate the
+      conflict.
+    - Current showstopper: I appear to be getting infinite interrupts as
+      soon as joystick button interrupts are enabled.
 
 Configurations
 ==============
@@ -605,8 +622,8 @@ Configurations
 
        Nucleo CN10 STM32F4x1RE
        ----------- ------------
-       Pin 21 PA9  USART1_RX
-       Pin 33 PA10 USART1_TX
+       Pin 21 PA9  USART1_RX   *Warning you make need to reverse RX/TX on
+       Pin 33 PA10 USART1_TX    some RS-232 converters
        Pin 20 GND
        Pin 8  U5V
 
