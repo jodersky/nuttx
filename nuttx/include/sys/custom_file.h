@@ -1,5 +1,5 @@
 /****************************************************************************
- * configs/nucleo-f4x1re/src/stm32_nsh.c
+ * include/sys/custom_file.h
  *
  *   Copyright (C) 2014 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
@@ -33,120 +33,27 @@
  *
  ****************************************************************************/
 
+#ifndef __INCLUDE_SYS_CUSTOM_FILE_H
+#define __INCLUDE_SYS_CUSTOM_FILE_H
+
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-#include <nuttx/config.h>
-
-#include <stdio.h>
-#include <syslog.h>
-#include <errno.h>
-
-#include <nuttx/arch.h>
-#include <nuttx/sdio.h>
-#include <nuttx/mmcsd.h>
-
-#include <stm32.h>
-#include <stm32_uart.h>
-
-#include <arch/board/board.h>
-
-#include "nucleo-f4x1re.h"
+#include <nuttx/fs/fs.h>
 
 /****************************************************************************
  * Pre-Processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Private Data
+ * Type Definitions
  ****************************************************************************/
+
+typedef struct file_struct __FILE;
 
 /****************************************************************************
- * Private Functions
+ * Public Function Prototypes
  ****************************************************************************/
 
-/****************************************************************************
- * Public Functions
- ****************************************************************************/
-
-/****************************************************************************
- * Name: up_netinitialize
- *
- * Description:
- *   Dummy function expected to start-up logic.
- *
- ****************************************************************************/
-
-#ifdef CONFIG_WL_CC3000
-void up_netinitialize(void)
-{
-}
-#endif
-
-/****************************************************************************
- * Name: nsh_archinitialize
- *
- * Description:
- *   Perform architecture specific initialization
- *
- ****************************************************************************/
-
-int nsh_archinitialize(void)
-{
-#if defined(HAVE_MMCSD) || defined(CONFIG_AJOYSTICK)
-  int ret;
-#endif
-
-  /* Configure CPU load estimation */
-
-#ifdef CONFIG_SCHED_INSTRUMENTATION
-  cpuload_initialize_once();
-#endif
-
-#ifdef HAVE_MMCSD
-  /* First, get an instance of the SDIO interface */
-
-  g_sdio = sdio_initialize(CONFIG_NSH_MMCSDSLOTNO);
-  if (!g_sdio)
-    {
-      syslog(LOG_ERR, "ERROR: Failed to initialize SDIO slot %d\n",
-             CONFIG_NSH_MMCSDSLOTNO);
-      return -ENODEV;
-    }
-
-  /* Now bind the SDIO interface to the MMC/SD driver */
-
-  ret = mmcsd_slotinitialize(CONFIG_NSH_MMCSDMINOR, g_sdio);
-  if (ret != OK)
-    {
-      syslog(LOG_ERR,
-             "ERROR: Failed to bind SDIO to the MMC/SD driver: %d\n",
-             ret);
-      return ret;
-    }
-
-  /* Then let's guess and say that there is a card in the slot. There is no
-   * card detect GPIO.
-   */
-
-  sdio_mediachange(g_sdio, true);
-
-  syslog(LOG_INFO, "[boot] Initialized SDIO\n");
-#endif
-
-#ifdef CONFIG_AJOYSTICK
-  /* Initialize and register the joystick driver */
-
-  ret = board_ajoy_initialize();
-  if (ret != OK)
-    {
-      syslog(LOG_ERR,
-             "ERROR: Failed to register the joystick driver: %d\n",
-             ret);
-      return ret;
-    }
-#endif
-
-  return OK;
-}
+#endif /* __INCLUDE_SYS_CUSTOM_FILE_H */

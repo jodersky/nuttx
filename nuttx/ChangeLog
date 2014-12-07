@@ -9137,3 +9137,17 @@
 	  analog Joystick shield support for the Nucleo F4x1RE boards.  There
 	  are still some ADC issues to be worke through as of the initial
 	  commit (2014-12-3).
+	* /drivers/eeprom/spi_xx25xx.c and /include/nuttx/eeprom/spi_xx25xx.h:
+	  Add support for ST Micro EEPROM device geometries.  From Sebastien
+	  Lorquet (2014-12-5).
+	* sched/mqueue: msg type should be char * not void * in mq_send,
+	  mq_timedsend, mq_receive, and mq_timedreceive.  Noted by  Pierre-Noel
+	  Bouteville (2014-12-05).
+	* fs/mqueue/mq_open.c and sched/mqueue/mq_msgqalloc.c: In message queue
+	  creation return ENOSPC error if size exceeds the configured size of
+	  pre-allocated messages; Use ENOSPC vs ENOMEM per OpenGroup.org.  From
+	  Pierre-Noel Bouteville (2014-12-6).
+	* Add sys/custom_file.h.  Used when CUSTOM_FILE_IO is define and avoids
+	  re-definition errors about the FILE define.  From Thomas Gruber via
+	  the PX4 repository (2014-12-06).
+
