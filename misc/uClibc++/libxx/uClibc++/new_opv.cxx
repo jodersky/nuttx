@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ */
 
 #include <new>
 #include <cstdlib>
@@ -30,25 +30,25 @@
 
 _UCXXEXPORT void *operator new[](std::size_t numBytes) throw(std::bad_alloc)
 {
-  // C++ stardard 5.3.4.8 requires that a valid pointer be returned for
+  // C++ standard 5.3.4.8 requires that a valid pointer be returned for
   // a call to new(0). Thus:
 
   if (numBytes == 0)
-  {
-    numBytes = 1;
-  }
+    {
+      numBytes = 1;
+    }
 
   // Allocate the memory
 
   void *p = malloc(numBytes);
   if (p == 0)
-  {
+    {
 #ifdef CONFIG_UCLIBCXX_EXCEPTION
-    std::__throw_bad_alloc();
+      std::__throw_bad_alloc();
 #else
-    std::terminate();
+      std::terminate();
 #endif
-  }
+    }
 
   return p;
 }
