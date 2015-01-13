@@ -81,49 +81,93 @@
 
 #include "kinetis_internal.h"
 
-#define GPIO_LED0 (PIN_PORTC | PIN5 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
-
-#define PORTC_PCR5		(*(volatile uint32_t *)0x4004B014) // Pin Control Register n
-#define GPIOC_PDOR		(*(volatile uint32_t *)0x400FF080) // Port Data Output Register
-#define GPIOC_PSOR		(*(volatile uint32_t *)0x400FF084) // Port Set Output Register
-#define GPIOC_PCOR		(*(volatile uint32_t *)0x400FF088) // Port Clear Output Register
-#define GPIOC_PTOR		(*(volatile uint32_t *)0x400FF08C) // Port Toggle Output Register
-#define GPIOC_PDIR		(*(volatile uint32_t *)0x400FF090) // Port Data Input Register
-#define GPIOC_PDDR		(*(volatile uint32_t *)0x400FF094) // Port Data Direction Register
-
- #define PORT_PCR_SRE			((uint32_t)0x00000004)		// Slew Rate Enable
- #define PORT_PCR_DSE			((uint32_t)0x00000040)		// Drive Strength Enable
- #define PORT_PCR_MUX(n)		((uint32_t)(((n) & 7) << 8))	// Pin Mux Control
-
-#define SIM_SCGC5   (*(volatile uint32_t *)0x40048038) // System Clock Gating Control Register 5
-#define PORTC_PCR5    (*(volatile uint32_t *)0x4004B014) // Pin Control Register n
-#define GPIOC_PDOR    (*(volatile uint32_t *)0x400FF080) // Port Data Output Register
-#define GPIOC_PSOR    (*(volatile uint32_t *)0x400FF084) // Port Set Output Register
-#define GPIOC_PCOR    (*(volatile uint32_t *)0x400FF088) // Port Clear Output Register
-#define GPIOC_PTOR    (*(volatile uint32_t *)0x400FF08C) // Port Toggle Output Register
-#define GPIOC_PDIR    (*(volatile uint32_t *)0x400FF090) // Port Data Input Register
-#define GPIOC_PDDR    (*(volatile uint32_t *)0x400FF094) // Port Data Direction Register
-
-#define PORT_PCR_SRE     ((uint32_t)0x00000004)    // Slew Rate Enable
-#define PORT_PCR_DSE     ((uint32_t)0x00000040)    // Drive Strength Enable
-#define PORT_PCR_MUX(n)    ((uint32_t)(((n) & 7) << 8))  // Pin Mux Control
-
-
-
-
 #ifdef CONFIG_ARCH_LEDS
+
+#define GPIO_LED0 (PIN_PORTC | PIN5 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
+#define GPIO_LED1 (PIN_PORTD | PIN1 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
+#define GPIO_LED2 (PIN_PORTC | PIN0 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
+#define GPIO_LED3 (PIN_PORTB | PIN0 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
+#define GPIO_LED4 (PIN_PORTB | PIN1 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
+#define GPIO_LED5 (PIN_PORTB | PIN3 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
+#define GPIO_LED6 (PIN_PORTB | PIN2 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
+#define GPIO_LED7 (PIN_PORTD | PIN5 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
+#define GPIO_LED8 (PIN_PORTD | PIN6 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
+
+static void set_led(int led, bool value)
+{
+	switch(led) {
+	case LED_STARTED:
+		kinetis_gpiowrite(GPIO_LED0, value);
+		break;
+	case LED_HEAPALLOCATE:
+		kinetis_gpiowrite(GPIO_LED1, value);
+		break;
+	case LED_IRQSENABLED:
+		kinetis_gpiowrite(GPIO_LED2, value);
+		break;
+	case LED_STACKCREATED:
+		kinetis_gpiowrite(GPIO_LED3, value);
+		break;
+	case LED_INIRQ:
+		kinetis_gpiowrite(GPIO_LED4, value);
+		break;
+	case LED_SIGNAL:
+		kinetis_gpiowrite(GPIO_LED5, value);
+		break;
+	case LED_ASSERTION:
+		kinetis_gpiowrite(GPIO_LED6, value);
+		break;
+	case LED_PANIC:
+		kinetis_gpiowrite(GPIO_LED7, value);
+		break;
+	default:
+		kinetis_gpiowrite(GPIO_LED8, value);
+		break;
+	}
+}
 void board_led_initialize(void)
 {
-
+	volatile unsigned long counter = 0;
 
 	kinetis_pinconfig(GPIO_LED0);
-	
+	kinetis_pinconfig(GPIO_LED1);
+	kinetis_pinconfig(GPIO_LED2);
+	kinetis_pinconfig(GPIO_LED3);
+	kinetis_pinconfig(GPIO_LED4);
+	kinetis_pinconfig(GPIO_LED5);
+	kinetis_pinconfig(GPIO_LED6);
+	kinetis_pinconfig(GPIO_LED7);
+	kinetis_pinconfig(GPIO_LED8);
 
-	//kinetis_pinconfig(PIN_PORTC | PIN5 | GPIO_OUTPUT | GPIO_HIGHDRIVE);
-	//SIM_SCGC5 = 0x00043F82;   // clocks active to all GPIO
-  	//PORTC_PCR5 = PORT_PCR_SRE | PORT_PCR_DSE | PORT_PCR_MUX(1); // set to gpio
-	//GPIOC_PDDR |= (1 << 5); // set to output
-	//GPIOC_PSOR |= (1 << 5); // set high
+	set_led(LED_STARTED, true);
+	set_led(LED_HEAPALLOCATE, true);
+	set_led(LED_IRQSENABLED, true);
+	set_led(LED_STACKCREATED, true);
+	set_led(LED_INIRQ, true);
+	set_led(LED_SIGNAL, true);
+	set_led(LED_ASSERTION, true);
+	set_led(LED_PANIC, true);
+	kinetis_gpiowrite(GPIO_LED8, true);
+
+	counter = 0;
+	while(counter < 1000000) {
+		++counter;
+	}
+
+	set_led(LED_STARTED, false);
+	set_led(LED_HEAPALLOCATE, false);
+	set_led(LED_IRQSENABLED, false);
+	set_led(LED_STACKCREATED, false);
+	set_led(LED_INIRQ, false);
+	set_led(LED_SIGNAL, false);
+	set_led(LED_ASSERTION, false);
+	set_led(LED_PANIC, false);
+	kinetis_gpiowrite(GPIO_LED8, false);
+
+	counter = 0;
+	while(counter < 1000000) {
+		++counter;
+	}
 }
 
 /****************************************************************************
@@ -132,7 +176,7 @@ void board_led_initialize(void)
 
 void board_led_on(int led)
 {
-	kinetis_gpiowrite(GPIO_LED0, true);
+	set_led(led, true);
 }
 
 /****************************************************************************
@@ -141,7 +185,7 @@ void board_led_on(int led)
 
 void board_led_off(int led)
 {
-  kinetis_gpiowrite(GPIO_LED0, false);
+  set_led(led, false);
 }
 
 #endif /* CONFIG_ARCH_LEDS */

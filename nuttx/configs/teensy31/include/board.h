@@ -51,39 +51,24 @@
  ************************************************************************************/
 
 /* Clocking *************************************************************************/
-/* The Kwikstik-K40 has a 4MHz crystal on board */
-
-//#define BOARD_EXTCLOCK       1              /* External clock */
- #undef BOARD_EXTCLOCK
-#define BOARD_EXTAL_FREQ     72000000       /* 50MHz Oscillator */
+#undef BOARD_EXTCLOCK						/* No external clock */
+#define BOARD_EXTAL_FREQ     16000000       /* 16MHz Oscillator */
 #define BOARD_XTAL32_FREQ    32768          /* 32KHz RTC Oscillator */
 
 /* PLL Configuration.  NOTE: Only even frequency crystals are supported that will
  * produce a 2MHz reference clock to the PLL.
  *
- *   PLL Input frequency:   PLLIN  = REFCLK/PRDIV = 4MHz/2 = 2MHz
+ *   PLL Input frequency:   PLLIN  = REFCLK/PRDIV = 16MHz/8 = 2MHz
  *   PLL Output frequency:  PLLOUT = PLLIN*VDIV   = 2Mhz*48 = 96MHz
  *   MCG Frequency:         PLLOUT = 96MHz
  */
  
-#define BOARD_PRDIV          25             /* PLL External Reference Divider */
-#define BOARD_VDIV           48             /* PLL VCO Divider (frequency multiplier) */
+#define BOARD_PRDIV          8             /* PLL External Reference Divider */
+#define BOARD_VDIV           48            /* PLL VCO Divider (frequency multiplier) */
 
 #define BOARD_PLLIN_FREQ     (BOARD_EXTAL_FREQ / BOARD_PRDIV)
 #define BOARD_PLLOUT_FREQ    (BOARD_PLLIN_FREQ * BOARD_VDIV)
 #define BOARD_MCG_FREQ       BOARD_PLLOUT_FREQ
-
-/* SIM CLKDIV1 dividers */
-
-#define BOARD_OUTDIV1        1              /* Core        = MCG, 96MHz */
-#define BOARD_OUTDIV2        2              /* Bus         = MCG/2, 48MHz */
-#define BOARD_OUTDIV3        2              /* FlexBus     = MCG/2, 48MHz */
-#define BOARD_OUTDIV4        4              /* Flash clock = MCG/4, 24MHz */
-
-#define BOARD_CORECLK_FREQ  (BOARD_MCG_FREQ / BOARD_OUTDIV1)
-#define BOARD_BUS_FREQ      (BOARD_MCG_FREQ / BOARD_OUTDIV2)
-#define BOARD_FLEXBUS_FREQ  (BOARD_MCG_FREQ / BOARD_OUTDIV3)
-#define BOARD_FLASHCLK_FREQ (BOARD_MCG_FREQ / BOARD_OUTDIV4)
 
 /* SIM CLKDIV1 dividers */
 
