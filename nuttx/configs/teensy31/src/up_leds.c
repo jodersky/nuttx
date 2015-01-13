@@ -106,6 +106,9 @@ void board_led_initialize(void)
   	PORTC_PCR5 = PORT_PCR_SRE | PORT_PCR_DSE | PORT_PCR_MUX(1); // set to gpio
 	GPIOC_PDDR |= (1 << 5); // set to output
 	GPIOC_PSOR |= (1 << 5); // set high
+	while(1) {
+		
+	}
 }
 
 /****************************************************************************
