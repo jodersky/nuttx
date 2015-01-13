@@ -343,7 +343,7 @@ void kinetis_clockconfig(void)
  *
  ****************************************************************************/
 
-void __ramfunc__
+void __ramfunc__ __attribute__ ((noinline))
 kinesis_setdividers(uint32_t div1, uint32_t div2, uint32_t div3, uint32_t div4)
 {
   uint32_t regval;
