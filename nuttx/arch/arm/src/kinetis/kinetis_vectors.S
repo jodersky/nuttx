@@ -178,7 +178,7 @@ _vectors:
 	.word	kinetis_dmach14		/* Vector 30: DMA channel 14 transfer complete */
 	.word	kinetis_dmach15		/* Vector 31: DMA channel 15 transfer complete */
 	.word	kinetis_dmaerr		/* Vector 32: DMA error interrupt channels 0-15 */
-	.word	kinetis_mcm			/* Vector 33: MCM Normal interrupt */
+	.word	kinetis_reserved	/* Vector 33: Reserved */
 	.word	kinetis_flashcc		/* Vector 34: Flash memory command complete */
 	.word	kinetis_flashrc		/* Vector 35: Flash memory read collision */
 	.word	kinetis_smclvd		/* Vector 36: Mode Controller low-voltage detect, low-voltage warning */
@@ -247,7 +247,7 @@ _vectors:
 	.word	kinetis_tsi			/* Vector 99: TSI all sources */
 	.word	kinetis_mcg			/* Vector 100: MCG */
 	.word	kinetis_lpt			/* Vector 101: Low power timer */
-	.word	kinetis_slcd		/* Vector 102: Segment LCD all sources */
+	.word	kinetis_reserved	/* Vector 102: Reserved */
 	.word	kinetis_porta		/* Vector 103: Pin detect port A */
 	.word	kinetis_portb		/* Vector 104: Pin detect port B */
 	.word	kinetis_portc		/* Vector 105: Pin detect port C */
