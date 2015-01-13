@@ -1,5 +1,5 @@
 /********************************************************************************************
- * arch/arm/src/kinetis/kinetis_pinmux.h
+ * arch/arm/src/kinetis/kinetis_k40pinmux.h
  *
  *   Copyright (C) 2011 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
@@ -33,8 +33,8 @@
  *
  ********************************************************************************************/
 
-#ifndef __ARCH_ARM_SRC_KINETIS_KINETIS_PINMUX_H
-#define __ARCH_ARM_SRC_KINETIS_KINETIS_PINMUX_H
+#ifndef __ARCH_ARM_SRC_KINETIS_KINETIS_K40PINMUX_H
+#define __ARCH_ARM_SRC_KINETIS_KINETIS_K40PINMUX_H
 
 /********************************************************************************************
  * Included Files
@@ -44,23 +44,26 @@
 
 #include "chip.h"
 
-/* This file is just a wrapper around pin muxing header files for the Kinetis family selected
- * by the logic in chip.h.
- */
-
-#if defined(KINETIS_K20)
-#  include "kinetis_k20pinmux.h"
-#elif defined(KINETIS_K40)
-#  include "kinetis_k40pinmux.h"
-#elif defined(KINETIS_K60)
-#  include "kinetis_k60pinmux.h"
-#else
-#  error "No pin multiplexing for this Kinetis part"
-#endif
-
 /********************************************************************************************
  * Pre-processor Definitions
  ********************************************************************************************/
+/* Reference: Paragraph 10.3.1, p 207, of FreeScale document K20P64M72SF1RM
+ *
+ * In most cases, there are alternative configurations for various pins. Those alternative
+ * pins are labeled with a suffix like _1, _2, etc. in order to distinguish them.  Logic in
+ * the board.h file must select the correct pin configuration for the board by defining a pin
+ * configuration (with no suffix) that maps to the correct alternative.
+ */
+
+#if defined(CONFIG_ARCH_CHIP_MK20DX256VLH7)
+
+/* Pin configurations are deferred to board configuration */
+
+#else
+  /* The pin muxing for other K20 parts is defined in other documents */
+
+#  error "No pin multiplexing for this Kinetis K20 part"
+#endif
 
 /********************************************************************************************
  * Public Types
@@ -74,4 +77,4 @@
  * Public Functions
  ********************************************************************************************/
 
-#endif /* __ARCH_ARM_SRC_KINETIS_KINETIS_PINMUX_H */
+#endif /* __ARCH_ARM_SRC_KINETIS_KINETIS_K40PINMUX_H */
