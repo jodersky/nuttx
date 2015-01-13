@@ -93,6 +93,9 @@
 #define GPIO_LED7 (PIN_PORTD | PIN5 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
 #define GPIO_LED8 (PIN_PORTD | PIN6 | GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE)
 
+/* Delay used to blink all leds once */
+#define LED_DELAY_LOOPS 1000000
+
 static void set_led(int led, bool value)
 {
 	switch(led) {
@@ -125,6 +128,7 @@ static void set_led(int led, bool value)
 		break;
 	}
 }
+
 void board_led_initialize(void)
 {
 	volatile unsigned long counter = 0;
@@ -150,7 +154,7 @@ void board_led_initialize(void)
 	kinetis_gpiowrite(GPIO_LED8, true);
 
 	counter = 0;
-	while(counter < 1000000) {
+	while(counter < LED_DELAY_LOOPS) {
 		++counter;
 	}
 
@@ -165,7 +169,7 @@ void board_led_initialize(void)
 	kinetis_gpiowrite(GPIO_LED8, false);
 
 	counter = 0;
-	while(counter < 1000000) {
+	while(counter < LED_DELAY_LOOPS) {
 		++counter;
 	}
 }
