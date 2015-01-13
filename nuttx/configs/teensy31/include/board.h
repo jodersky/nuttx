@@ -53,7 +53,8 @@
 /* Clocking *************************************************************************/
 /* The Kwikstik-K40 has a 4MHz crystal on board */
 
-#define BOARD_EXTCLOCK       1              /* External clock */
+//#define BOARD_EXTCLOCK       1              /* External clock */
+ #undef BOARD_EXTCLOCK
 #define BOARD_EXTAL_FREQ     72000000       /* 50MHz Oscillator */
 #define BOARD_XTAL32_FREQ    32768          /* 32KHz RTC Oscillator */
 

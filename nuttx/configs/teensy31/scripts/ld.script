@@ -70,7 +70,6 @@ SECTIONS
 	} > cfmprotect
 
 	.text : {
-		. = ALIGN(4);
 		_stext = ABSOLUTE(.);
 		*(.text .text.*)
 		*(.fixup)

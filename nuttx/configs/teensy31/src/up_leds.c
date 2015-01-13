@@ -95,20 +95,35 @@
  #define PORT_PCR_DSE			((uint32_t)0x00000040)		// Drive Strength Enable
  #define PORT_PCR_MUX(n)		((uint32_t)(((n) & 7) << 8))	// Pin Mux Control
 
+#define SIM_SCGC5   (*(volatile uint32_t *)0x40048038) // System Clock Gating Control Register 5
+#define PORTC_PCR5    (*(volatile uint32_t *)0x4004B014) // Pin Control Register n
+#define GPIOC_PDOR    (*(volatile uint32_t *)0x400FF080) // Port Data Output Register
+#define GPIOC_PSOR    (*(volatile uint32_t *)0x400FF084) // Port Set Output Register
+#define GPIOC_PCOR    (*(volatile uint32_t *)0x400FF088) // Port Clear Output Register
+#define GPIOC_PTOR    (*(volatile uint32_t *)0x400FF08C) // Port Toggle Output Register
+#define GPIOC_PDIR    (*(volatile uint32_t *)0x400FF090) // Port Data Input Register
+#define GPIOC_PDDR    (*(volatile uint32_t *)0x400FF094) // Port Data Direction Register
+
+#define PORT_PCR_SRE     ((uint32_t)0x00000004)    // Slew Rate Enable
+#define PORT_PCR_DSE     ((uint32_t)0x00000040)    // Drive Strength Enable
+#define PORT_PCR_MUX(n)    ((uint32_t)(((n) & 7) << 8))  // Pin Mux Control
+
+
+
+
 #ifdef CONFIG_ARCH_LEDS
 void board_led_initialize(void)
 {
-	//kinetis_pinconfig(GPIO_LED0);
-	//kinetis_gpiowrite(GPIO_LED0, true);
+
+
+	kinetis_pinconfig(GPIO_LED0);
 	
 
 	//kinetis_pinconfig(PIN_PORTC | PIN5 | GPIO_OUTPUT | GPIO_HIGHDRIVE);
-  	PORTC_PCR5 = PORT_PCR_SRE | PORT_PCR_DSE | PORT_PCR_MUX(1); // set to gpio
-	GPIOC_PDDR |= (1 << 5); // set to output
-	GPIOC_PSOR |= (1 << 5); // set high
-	while(1) {
-		
-	}
+	//SIM_SCGC5 = 0x00043F82;   // clocks active to all GPIO
+  	//PORTC_PCR5 = PORT_PCR_SRE | PORT_PCR_DSE | PORT_PCR_MUX(1); // set to gpio
+	//GPIOC_PDDR |= (1 << 5); // set to output
+	//GPIOC_PSOR |= (1 << 5); // set high
 }
 
 /****************************************************************************
@@ -117,7 +132,7 @@ void board_led_initialize(void)
 
 void board_led_on(int led)
 {
-	//kinetis_gpiowrite(GPIO_LED0, true);
+	kinetis_gpiowrite(GPIO_LED0, true);
 }
 
 /****************************************************************************
@@ -126,7 +141,7 @@ void board_led_on(int led)
 
 void board_led_off(int led)
 {
-  //kinetis_gpiowrite(GPIO_LED0, true);
+  kinetis_gpiowrite(GPIO_LED0, false);
 }
 
 #endif /* CONFIG_ARCH_LEDS */
