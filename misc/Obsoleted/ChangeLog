@@ -49,4 +49,19 @@ ChangeLog
 
   REMOVAL PATCH
     misc/Obsoleted/Patches/Remove-stm32f100rc_generic-2014-11-10.patch
- 
+
+2015-01-14: Removed support for the px4fmu-v2_upstream board configuration
+
+  REASON
+    This is not the official configuration for the PX4 board and has led
+    to confusion by NuttX users.  The board configuration also requires
+    some ongoing maintenance and customization to support ongoing PX4
+    testing and evaluation.  It is best retained the PX4 repositories
+    where it can be properly maintained and not in the upstream NuttX
+    repository.
+
+  NEW HOME
+    misc/Obsoleted/configs/px4fmu-v2_upstream
+
+  REMOVAL PATCH
+    misc/Obsoleted/Patches/Remove-stm32f100rc_generic-2014-11-10.patch
