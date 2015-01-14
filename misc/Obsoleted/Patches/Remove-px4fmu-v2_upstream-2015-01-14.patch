@@ -1,24 +1,5 @@
-diff --git a/apps/interpreters/micropython/Makefile b/apps/interpreters/micropython/Makefile
-index e4b1b7f..fec76d9 100644
 --- a/apps/interpreters/micropython/Makefile
 +++ b/apps/interpreters/micropython/Makefile
-@@ -69,13 +69,13 @@ CROSS_COMPILE ?= $(CROSSDEV)
- 
- QSTR_DEFS = qstrdefsport.h
- 
--# include py core make definitions
-+# Include py core make definitions
- 
- -include $(MICROPTHYON_SRCDIR)/py.mk
- 
--# c99 is needed for micropython
-+# c99 is needed for Micro Python
- 
--CFLAGS+=-std=c99 -Wno-shadow -Wno-strict-prototypes
-+CFLAGS += -std=c99 -Wno-shadow -Wno-strict-prototypes
- 
- INC =  -I. -I$(WD) -I$(MICROPYTHON_UNPACKDIR) -I$(PY_SRC) -I$(BUILD)
- 
 diff --git a/nuttx/configs/Kconfig b/nuttx/configs/Kconfig
 index 33ad22b..de74568 100644
 --- a/nuttx/configs/Kconfig
