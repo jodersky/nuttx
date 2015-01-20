@@ -167,7 +167,12 @@ struct rtl8187x_statistics_s
   uint32_t rxcrcerr;        /* - Number of packets received with a CRC error */
   uint32_t rxbadproto;      /* - Number of dropped packets with bad protocol */
                             /* RX Good: received - rxdropped */
-  uint32_t rxippackets;     /* - Number of good IP packets */
+#ifdef CONFIG_NET_IPv4
+  uint32_t rxipv4packets;   /* - Number of good IPv4 packets */
+#endif
+#ifdef CONFIG_NET_IPv6
+  uint32_t rxipv6packets;   /* - Number of good IPv6 packets */
+#endif
   uint32_t rxarppackets;    /* - Number of good ARP packets */
 };
 #endif
@@ -2236,15 +2241,18 @@ static inline void rtl8187x_rxdispatch(FAR struct rtl8187x_state_s *priv,
 
   /* We only accept IP packets of the configured type and ARP packets */
 
-#ifdef CONFIG_NET_IPv6
-  if (ethhdr->type == HTONS(ETHTYPE_IP6))
-#else
+#ifdef CONFIG_NET_IPv4
   if (ethhdr->type == HTONS(ETHTYPE_IP))
-#endif
     {
-      RTL8187X_STATS(priv, rxippackets);
+      nllvdbg("IPv4 frame\n");
+      RTL8187X_STATS(priv, rxipv4packets);
+
+      /* Handle ARP on input then give the IPv4 packet to the network
+       * layer
+       */
+
       arp_ipin(&priv->ethdev);
-      devif_input(&priv->ethdev);
+      ipv4_input(&priv->ethdev);
 
       /* If the above function invocation resulted in data that should be
        * sent out on the network, the field  d_len will set to a value > 0.
@@ -2252,11 +2260,56 @@ static inline void rtl8187x_rxdispatch(FAR struct rtl8187x_state_s *priv,
 
       if (priv->ethdev.d_len > 0)
         {
-          arp_out(&priv->ethdev);
+          /* Update the Ethernet header with the correct MAC address */
+
+#ifdef CONFIG_NET_IPv6
+          if (IFF_IS_IPv4(priv->ethdev.d_flags))
+#endif
+            {
+              arp_out(&priv->ethdev);
+            }
+
+          /* And send the packet */
+
           rtl8187x_transmit(priv);
         }
     }
-  else if (ethhdr->type == htons(ETHTYPE_ARP))
+  else
+#endif
+#ifdef CONFIG_NET_IPv6
+  if (ethhdr->type == HTONS(ETHTYPE_IP6))
+    {
+      nllvdbg("IPv6 frame\n");
+      RTL8187X_STATS(priv, rxipv6packets);
+
+      /* Give the IPv6 packet to the network layer */
+
+      ipv6_input(&priv->ethdev);
+
+      /* If the above function invocation resulted in data that should be
+       * sent out on the network, the field  d_len will set to a value > 0.
+       */
+
+      if (priv->ethdev.d_len > 0)
+       {
+#ifdef CONFIG_NET_IPv4
+          /* Update the Ethernet header with the correct MAC address */
+
+          if (IFF_IS_IPv4(priv->ethdev.d_flags))
+            {
+              arp_out(&priv->ethdev);
+            }
+#endif
+
+          /* And send the packet */
+
+          rtl8187x_transmit(priv);
+        }
+    }
+  else
+#endif
+#ifdef CONFIG_NET_ARP
+  if (ethhdr->type == htons(ETHTYPE_ARP))
     {
       RTL8187X_STATS(priv, rxarppackets);
       arp_arpin(&priv->ethdev);
@@ -2271,6 +2324,7 @@ static inline void rtl8187x_rxdispatch(FAR struct rtl8187x_state_s *priv,
         }
     }
   else
+#endif
     {
       RTL8187X_STATS(priv, rxbadproto);
       RTL8187X_STATS(priv, rxdropped);
