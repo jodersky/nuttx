@@ -273,10 +273,10 @@ fi
 # Licensing
 
 echo "You are about to install the uClibc++ library into the NuttX source"
-echo "tree.  NuttX is licensed under the permissive, modified BSD License; uClibc"
+echo "tree.  NuttX is licensed under the permissive, modified BSD License; uClibc++"
 echo "is licensed under the GNU LGPL Version 3 license.  When you install"
-echo "uClibc++ into the NuttX source tree, you must then comply with uClibc's"
-echo "stricter GNU LGPL Version 3 license."
+echo "uClibc++ into the NuttX source tree, you must then comply with all aspects"
+echo "of uClibc++'s stricter GNU LGPL Version 3 license."
 echo ""
 
 readyn "Continue" "N"
