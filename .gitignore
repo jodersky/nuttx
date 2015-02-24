@@ -10,3 +10,7 @@ Make.dep
 core
 .gdbinit
 cscope.out
+.cproject
+.project
+.settings
+
